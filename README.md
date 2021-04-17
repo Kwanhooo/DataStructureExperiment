@@ -1,7 +1,7 @@
 # DataStructureExperiment
 <div style="text-align: center">
-                    <h1>Hi there 👋</h1>
-                    <h4>This repository is used to store the code of data structure experiment</h2>
+                    <h2>Hi there 👋</h1>
+                    <h3>This repository is used to store the code of data structure experiment</h2>
                 </div>
                 &nbsp;🔭 I’m currently working on C++ and Java.<br>
                 &nbsp;🌱 I’m currently learning C++ and Java.<br>
