@@ -527,7 +527,6 @@ start:
 	DestroyStack(operator_stack);
 	temp_char = ' ';
 	rewind(stdin);
-	goto start;
 
 	return 0;
 }
