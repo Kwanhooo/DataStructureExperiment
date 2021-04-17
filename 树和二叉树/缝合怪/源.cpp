@@ -57,6 +57,7 @@ typedef struct {
 	int rear;//尾指针，队列非空时，指向队尾元素的下一个位置
 }SqQueue;
 
+//访问队列
 Status queue_visit(QElemType item) {
 	printf("%p", item);
 	return SUCCESS;
@@ -75,7 +76,7 @@ Status ClearQueue(SqQueue* Q) {
 	return SUCCESS;
 }
 
-//判断队列是否为null
+//判断队列是否为空
 Status QueueEmpty(SqQueue Q) {
 	if (Q.front == Q.rear)
 		return TRUE;
@@ -175,6 +176,7 @@ Status Push(Stack& s, Elemtype e)
 	return SUCCESS;
 }
 
+//出栈
 Status Pop(Stack& s, Elemtype& e)
 {
 	if (s.top == s.base)
@@ -189,6 +191,7 @@ Status Pop(Stack& s, Elemtype& e)
 	}
 }
 
+//判断栈是否为空
 Status StackEmpty(Stack s)
 {
 	if (s.base == s.top)
@@ -197,9 +200,10 @@ Status StackEmpty(Stack s)
 		return FALSE;
 }
 
+//创建二叉树节点
 Node create()
 {
-	std::cout << "create() is called!" << std::endl;
+	//std::cout << "create() is called!" << std::endl;
 	Node n;
 	DataType temp_var;
 	temp_var = getchar();
@@ -217,11 +221,13 @@ Node create()
 	return n;
 }
 
+//访问二叉树节点并输出储存的数据
 void visit(Node n)
 {
 	std::cout << n->data;
 }
 
+//先序递归遍历
 Status pre_order_traverse(Node n)
 {
 	if (n == nullptr)
@@ -232,6 +238,7 @@ Status pre_order_traverse(Node n)
 	return SUCCESS;
 }
 
+//中序递归遍历
 Status in_order_traverse(Node n)
 {
 	if (n == nullptr)
@@ -242,6 +249,7 @@ Status in_order_traverse(Node n)
 	return SUCCESS;
 }
 
+//后序递归遍历
 Status post_order_traverse(Node n)
 {
 	if (n == nullptr)
@@ -255,6 +263,7 @@ Status post_order_traverse(Node n)
 SqQueue q;
 Node root_node;
 
+//遍历队列
 Status queue_traverse(Node n)
 {
 	if (n == root_node && n->left == nullptr && n->right == nullptr)
@@ -271,7 +280,6 @@ Status queue_traverse(Node n)
 		return SUCCESS;
 	DelQueue(&q, &n);
 	queue_traverse(n);
-
 }
 
 void count_record()
@@ -289,7 +297,8 @@ int recursion_get_node_amount(Node n)//递归做法
 	return SUCCESS;
 }
 
-void pre_get_node_info(Tree t)//非递归做法
+//非递归先序遍历并统计节点数据
+void pre_get_node_info(Tree t)
 {
 	Node n = t.root;
 	Stack node_stack;
@@ -460,6 +469,7 @@ void pre_get_node_info(Tree t)//非递归做法
 	}
 }
 
+//非递归中序遍历
 void in_order_stack_traverse(Tree t)
 {
 	Stack s;
@@ -498,14 +508,15 @@ void in_order_stack_traverse(Tree t)
 			if (n->left != nullptr && n->right != nullptr && n->left->in_order_isCounted &&
 				n->right->in_order_isCounted)
 				return;
-			if (n->left != nullptr && n->right == nullptr && n->left->in_order_isCounted)
+			if (n->left != nullptr && n->right == nullptr && n->left->in_order_isCounted && n->in_order_isCounted == true)
 				return;
-			if (n->left == nullptr && n->right != nullptr && n->right->in_order_isCounted)
+			if (n->left == nullptr && n->right != nullptr && n->right->in_order_isCounted && n->in_order_isCounted == true)
 				return;
 		}
 	}
 }
 
+//非递归方式后序遍历
 void post_order_stack_traverse(Tree t)
 {
 	Node n;
@@ -583,8 +594,7 @@ int main()
 
 	std::cout << "递归方法的后序遍历的结果：" << std::endl;
 	post_order_traverse(test_tree.root);
-	std::cout << std::endl;
-
+	std::cout << std::endl << std::endl;
 
 	//非递归方法遍历
 	std::cout << "非递归方法的先序遍历的结果：" << std::endl;
@@ -597,7 +607,7 @@ int main()
 
 	std::cout << "非递归方法的后序遍历的结果：" << std::endl;
 	post_order_stack_traverse(test_tree);
-	std::cout << std::endl;
+	std::cout << std::endl << std::endl;
 
 
 	//队列按层次遍历
@@ -605,7 +615,7 @@ int main()
 	root_node = test_tree.root;
 	std::cout << "使用队列按层次遍历的结果：" << std::endl;
 	queue_traverse(test_tree.root);
-	std::cout << std::endl;
+	std::cout << std::endl << std::endl;
 
 
 	//输出节点统计信息
