@@ -12,7 +12,7 @@
 #define QUEUE_MAXSIZE 100
 
 //ERROR_EXIT_CODE
-#define	UNKNOWN_ERROR 0x474544D8
+#define	INVALID_INPUT 0x474544D8
 
 //开启DEBUG输出
 #define DEBUG_MODE_ON
@@ -203,7 +203,9 @@ Status StackEmpty(Stack s)
 //创建二叉树节点
 Node create()
 {
-	//std::cout << "create() is called!" << std::endl;
+#ifdef DEBUG_MODE_ON
+	std::cout << "create() is called!" << std::endl;
+#endif
 	Node n;
 	DataType temp_var;
 	temp_var = getchar();
@@ -264,12 +266,12 @@ SqQueue q;
 Node root_node;
 
 //遍历队列
-Status queue_traverse(Node n)
+void queue_traverse(Node n)
 {
 	if (n == root_node && n->left == nullptr && n->right == nullptr)
 	{
 		visit(n);
-		return SUCCESS;
+		return;
 	}
 	visit(n);
 	if (n->left != nullptr)
@@ -277,7 +279,7 @@ Status queue_traverse(Node n)
 	if (n->right != nullptr)
 		EnterQueue(&q, n->right);
 	if (QueueEmpty(q) && n != root_node)
-		return SUCCESS;
+		return;
 	DelQueue(&q, &n);
 	queue_traverse(n);
 }
@@ -567,7 +569,7 @@ void post_order_stack_traverse(Tree t)
 	}
 }
 
-//测试用例:
+//可用测试用例:
 //Input:
 //+**/A##B##C##D##E##
 //InOrder
@@ -581,9 +583,14 @@ int main()
 	Tree test_tree;
 	std::cout << "Tips: 以下采用先序的方式创建Binary Tree，使用\'#\'代表该分支的终结" << std::endl;
 	test_tree.root = create();
-
-
+	if (test_tree.root==nullptr)
+	{
+		perror("INVALID INPUT");
+		exit(INVALID_INPUT);
+	}
+	
 	//递归方法遍历
+	std::cout << std::endl << "############递归方法遍历############" << std::endl;
 	std::cout << "递归方法的先序遍历的结果：" << std::endl;
 	pre_order_traverse(test_tree.root);
 	std::cout << std::endl;
@@ -594,9 +601,10 @@ int main()
 
 	std::cout << "递归方法的后序遍历的结果：" << std::endl;
 	post_order_traverse(test_tree.root);
-	std::cout << std::endl << std::endl;
+	std::cout << std::endl << "####################################" << std::endl << std::endl;
 
 	//非递归方法遍历
+	std::cout << std::endl << "############非递归方法遍历############" << std::endl;
 	std::cout << "非递归方法的先序遍历的结果：" << std::endl;
 	pre_get_node_info(test_tree);
 	std::cout << std::endl;
@@ -607,18 +615,18 @@ int main()
 
 	std::cout << "非递归方法的后序遍历的结果：" << std::endl;
 	post_order_stack_traverse(test_tree);
-	std::cout << std::endl << std::endl;
-
+	std::cout << std::endl << "######################################" << std::endl << std::endl;
 
 	//队列按层次遍历
+	std::cout << std::endl << "############队列按层次遍历############" << std::endl;
 	InitQueue(&q);
 	root_node = test_tree.root;
 	std::cout << "使用队列按层次遍历的结果：" << std::endl;
 	queue_traverse(test_tree.root);
-	std::cout << std::endl << std::endl;
-
+	std::cout << std::endl << "######################################" << std::endl << std::endl;
 
 	//输出节点统计信息
+	std::cout << std::endl << "############节点个数统计信息############" << std::endl;
 	std::cout << "利用递归方法查找到的二叉树的节点总数为：" << node_amount << std::endl;
 	std::cout << "非递归方法查找到的二叉树的节点总数为：" << node_amount << std::endl;
 	std::cout << "非递归方法查找到的二叉树度为2的节点总数为：" << degree_2_node_amount << std::endl;
@@ -628,6 +636,9 @@ int main()
 		"转换为原始类型即：" << static_cast<DataType>(min_elem) << std::endl;
 	std::cout << "二叉树中数值最大的元素数值为：" << static_cast<int> (max_elem) << '\t' << \
 		"转换为原始类型即：" << static_cast<DataType>(max_elem) << std::endl;
+	std::cout << std::endl << "########################################" << std::endl;
 
+	system("pause");
+	
 	return 0;
 }
