@@ -5,6 +5,7 @@
 #include <cstdio>
 #include<cassert>
 #include <string>
+#include <algorithm>
 
 #define ERROR 0
 #define SUCCESS 1
@@ -143,7 +144,7 @@ void visit(TreeNode n, string s)
 	if (n->letter == '#')
 		return;
 
-	std::cout <<'\''<< n->letter <<'\''<< "的权值为："<<n->weight<<",Huffman编码为：" << s << endl;
+	std::cout << '\'' << n->letter << '\'' << "的权值为：" << n->weight << ",Huffman编码为：" << s << endl;
 }
 
 typedef struct SqStack
@@ -216,10 +217,10 @@ Status StackEmpty(Stack s)
 }
 
 //产生Huffman编码
-void HuffmanCodeGenerator(HuffmanTree t,TreeNode* huffman_code_list)
+void HuffmanCodeGenerator(HuffmanTree t, string* huffman_code_list)
 {
 	string s;
-	s = "#";
+	s = "";
 	TreeNode n = t.root;
 	Stack node_stack;
 	InitStack(node_stack);
@@ -246,23 +247,23 @@ void HuffmanCodeGenerator(HuffmanTree t,TreeNode* huffman_code_list)
 		}
 		else
 		{
-			if (n->letter=='#')
+			if (n->letter == '#')
 			{
-				if (n->pre_order_counted_times==0)
+				if (n->pre_order_counted_times == 0)
 				{
 					n->pre_order_counted_times++;
 					Push(node_stack, n);
 					n = n->left;
 					s += '1';
 				}
-				if (n->pre_order_counted_times==1)
+				if (n->pre_order_counted_times == 1)
 				{
 					n->pre_order_counted_times++;
 					Push(node_stack, n);
 					n = n->right;
 					s += '0';
 				}
-				if (n->pre_order_counted_times==2)
+				if (n->pre_order_counted_times == 2)
 				{
 					Pop(node_stack, n);
 					s = s.substr(0, s.length() - 1);
@@ -271,55 +272,122 @@ void HuffmanCodeGenerator(HuffmanTree t,TreeNode* huffman_code_list)
 			else
 			{
 				std::cout << '\'' << n->letter << '\'' << "的权值为：" << n->weight << ",Huffman编码为：" << s << endl;
-				n->huffman_code = (string*)malloc(100);
-				if (n->letter != ' ') 
-					huffman_code_list[n->letter - 'a'+1]=n;
+				//n->huffman_code = (string*)malloc(100);
+				//*(n->huffman_code) = s;
+				if (n->letter != ' ')
+					huffman_code_list[n->letter - 'a' + 1] = s;
 				if (n->letter == ' ')
-					huffman_code_list[0] = n;
+					huffman_code_list[0] = s;
 				Pop(node_stack, n);
 				s = s.substr(0, s.length() - 1);
 			}
 		}
 	}
-	cout << *(huffman_code_list[0]->huffman_code) << endl;
 }
 
-string SearchHuffmanCode(char c,TreeNode* huffman_code_list)
+string SearchHuffmanCode(char c, string* huffman_code_list)
 {
-	cout << *(huffman_code_list[c - 'a' + 1]->huffman_code) << endl;
-	return *(huffman_code_list[c - 'a' + 1]->huffman_code);
+	return huffman_code_list[c - 'a' + 1];
 }
 
-string HuffmanEncoder(string plaintext,TreeNode* huffman_code_list)
+string HuffmanEncoder(string plaintext, string* huffman_code_list)
 {
-	string ciphertext="#";
+	transform(plaintext.begin(), plaintext.end(), plaintext.begin(), ::tolower);
+	string ciphertext = "";
 	for (int i = 0; i < plaintext.length(); ++i)
 	{
-		ciphertext += SearchHuffmanCode(plaintext.at(i), huffman_code_list);
+		if (plaintext.at(i) == ' ')
+			ciphertext += huffman_code_list[0];
+		else
+			ciphertext += SearchHuffmanCode(plaintext.at(i), huffman_code_list);
 	}
 	return ciphertext;
 }
 
+string HuffmanDecoder(string ciphertext, string* huffman_code_list)
+{
+	string plaintext = "";
+	int length = 1;
+	int start_index = 0;
+	bool isMatch = false;
+	while (true)
+	{
+		string temp = ciphertext.substr(start_index, start_index + length - 1);
+		for (int i = 0; i < 27; ++i)
+		{
+			if (temp==huffman_code_list[i])
+			{
+				isMatch = true;
+				if (i == 0)
+					plaintext += ' ';
+				else
+					plaintext += (char)(i + 'a' - 1);
+			}
+		}
+		if (isMatch)
+		{
+			start_index += length;
+			length = 1;
+			isMatch = false;
+		}
+		else
+			length++;
+		if (start_index + length == ciphertext.length())
+			return plaintext;
+	}
+}
+
 int main()
 {
+	cout << "Sample Frequency of the alphabet:" << endl << "186 64 13 22 32 103 21 15 47 57 1 5 32 20 57 63 15 1 48 51 80 23 8 18 1 16 1" << endl << endl << endl;
 	//创建Huffman树
 	TreeNode* node_array = new TreeNode[1000];
 	GetAlphabetFreq(node_array);
 	HuffmanTree test_tree;
 	CreateHuffmanTree(test_tree, node_array);
-	TreeNode huffman_code_list[30];
+	string* huffman_code_list = new string[30];
 
 	//获取27种字符的Huffman编码
-	HuffmanCodeGenerator(test_tree,huffman_code_list);
+	HuffmanCodeGenerator(test_tree, huffman_code_list);
 
 	//对应地将英文转换为Huffman编码处理后的密文
-	string plaintext;
-	cin >> plaintext;
-	string ciphertext = HuffmanEncoder(plaintext, huffman_code_list);
+	start:
+	/*cout << "请选择编码或者解码：\n键入 1 将明文转写为Huffman Code\n键入 2 将Huffman Code转化为明文" << endl;
+	char choice;
+	cin >> choice;
+	
+	switch (choice)
+	{
+	case '1':{
+		char plaintext[1000];
+		cout << "请输入明文：";
+		gets_s(plaintext);
+		string ciphertext = HuffmanEncoder(plaintext, huffman_code_list);
+		cout << "密文如下：" << endl;
+		cout << ciphertext << endl;
+			break;
+		}
+	case '2':{
+		char ciphertext[1000];
+		cout << "请输入密文：";
+		gets_s(ciphertext);
+		string plaintext = HuffmanDecoder(ciphertext, huffman_code_list);
+		cout << "明文如下：" << endl;
+		cout << plaintext << endl;
+		}
+	}*/
+	char ciphertext[1000];
+	cout << "请输入密文：";
+	gets_s(ciphertext);
+	string plaintext = HuffmanDecoder(ciphertext, huffman_code_list);
+	cout << "明文如下：" << endl;
+	cout << plaintext << endl;
+	
+	goto start;
 
 	//test_only
-	SearchHuffmanCode('a', huffman_code_list);
-	
+	//cout << huffman_code_list[1];
+
 	return 0;
 }
 
