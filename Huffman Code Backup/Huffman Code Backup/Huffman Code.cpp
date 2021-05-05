@@ -1,5 +1,4 @@
 #pragma warning (disable:4996)
-#pragma warning (disable:3861)
 
 #include <iostream>
 #include <cstdio>
@@ -15,7 +14,7 @@
 #define STACK_INCREMENT 10
 
 //ERROR_EXIT_CODE
-#define    INVALID_INPUT 0x474544D8
+#define INVALID_INPUT 0x474544D8
 
 //开启DEBUG输出
 //#define DEBUG_MODE_ON
@@ -322,14 +321,14 @@ int main() {
 start:
 	cout << "**********请选择编码或者解码**********\n  #键入 1 将明文转写为Huffman Code#\n  #键入 2 将Huffman Code转化为明文#" << endl;
 	char choice;
-	fflush(stdin);
+	//fflush(stdin);
 	cin >> choice;
 
 	switch (choice) {
 	case '1': {
 		char plaintext[1000] = { 0 };
-		cout << endl << endl << "**************请输入明文**************" << endl;
-		cin.ignore();
+		cout << endl << endl << "**************请输入原文**************" << endl;
+		//cin.ignore();
 		gets_s(plaintext);
 		string ciphertext = HuffmanEncoder(plaintext, huffman_code_list);
 		cout << "Huffman Code如下：" << endl;
@@ -339,13 +338,13 @@ start:
 		cout << "***********原文的二进制编码***********" << endl;
 		cout << bin_text << endl;
 		double compression_ratio = (1.0 - (double)ciphertext.length() / (double)bin_text.length()) * 100;
-		cout << "压缩率 ---> " << compression_ratio << '%' << endl << endl << endl;
+		cout << endl << "压缩率 ---> " << compression_ratio << '%' << endl;
 		break;
 	}
 	case '2': {
 		char ciphertext[1000] = { 0 };
 		cout << endl << endl << "**********请输入Huffman Code**********" << endl;
-		cin.ignore();
+		//cin.ignore();
 		gets_s(ciphertext);
 		string plaintext = HuffmanDecoder(ciphertext, huffman_code_list);
 		cout << "明文如下：" << endl;
@@ -356,13 +355,13 @@ start:
 		cout << bin_text << endl;
 		string ciphertext_copy = ciphertext;
 		double compression_ratio = ((double)bin_text.length() / (double)ciphertext_copy.length() - 1.0) * 100;
-		cout << "体积增长率 ---> " << compression_ratio << '%' << endl << endl << endl;
+		cout << endl << "体积增长率 ---> " << compression_ratio << '%' << endl;
 		break;
 	}
 	default:
 		exit(INVALID_INPUT);
 	}
-	cout << endl << endl << endl << endl << endl;
+	cout << "*************程序运行结束*************" << endl << endl << endl << endl << endl;
 	goto start;
 }
 

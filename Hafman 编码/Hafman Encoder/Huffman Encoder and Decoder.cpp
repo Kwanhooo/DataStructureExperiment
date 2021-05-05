@@ -77,7 +77,6 @@ Status Push(Stack& s, TreeNode e) {
 		s.top = s.base + s.stack_size;
 		s.stack_size = s.stack_size + STACK_INCREMENT;
 	}
-	//*s.top++ = e;
 	*s.top = e;
 	s.top++;
 	return SUCCESS;
@@ -228,8 +227,6 @@ void HuffmanCodeGenerator(HuffmanTree t, string* huffman_code_list) {
 			}
 			else {
 				std::cout << '\'' << n->letter << '\'' << "的权值为：" << n->weight << ",Huffman编码为：" << s << endl;
-				//n->huffman_code = (string*)malloc(100);
-				//*(n->huffman_code) = s;
 				if (n->letter != ' ')
 					huffman_code_list[n->letter - 'a' + 1] = s;
 				if (n->letter == ' ')
