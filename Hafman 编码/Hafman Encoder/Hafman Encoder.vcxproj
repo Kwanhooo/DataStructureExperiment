@@ -139,10 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Huffman Encoder.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="源.cpp" />
+    <ClCompile Include="Huffman Encoder and Decoder.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
